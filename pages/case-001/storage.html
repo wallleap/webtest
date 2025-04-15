@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../../common/base.css">
+  <style>
+    .container {
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      line-height: 1.5;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background-color: var(--color-white);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+
+  </style>
+  <script src="./storage.js"></script>
+  <script>
+    const data = [
+      { id: 1, name: 'Item 1', description: 'Description 1' },
+      { id: 2, name: 'Item 2', description: 'Description 2' },
+      { id: 3, name: 'Item 3', description: 'Description 3' }
+    ]
+    const dataKey = 'storage_test_data'
+    const dataValue = JSON.stringify(data)
+  </script>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="row">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody id="table_body"></tbody>
+        </table>
+        <!-- 添加记录 -->
+        <div class="add-record">
+          <a href="./add-record.html">添加记录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../../common/header.js"></script>
+  <script>
+    const storage = new Storage()
+    const tableBody = document.getElementById('table_body')
+
+    function renderTable(data) {
+      tableBody.innerHTML = ''
+      data.forEach(item => {
+        const row = document.createElement('tr')
+        row.innerHTML = `
+          <td>${item.id}</td>
+          <td>${item.name}</td>
+          <td>${item.description}</td>
+        `
+        tableBody.appendChild(row)
+      })
+    }
+
+    function init() {
+      storage.set(dataKey, dataValue)
+      const storedData = JSON.parse(storage.get(dataKey))
+      renderTable(storedData)
+    }
+
+    init()
+    storage.onStorageChange(dataKey, (newValue) => {
+      const updatedData = JSON.parse(newValue)
+      renderTable(updatedData)
+    })
+    // Simulate data change
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../../common/base.css">
+  <style>
+    .container {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 14px;
+      line-height: 1.5;
+      transition: border-color 0.3s;
+      background-color: var(--color-white);
+      color: var(--color-dark);
+    }
+
+    button {
+      min-width: 10em;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      font-size: 14px;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+  <script src="./storage.js"></script>
+  <script>
+    const data = [
+      { id: 1, name: 'Item 1', description: 'Description 1' },
+      { id: 2, name: 'Item 2', description: 'Description 2' },
+      { id: 3, name: 'Item 3', description: 'Description 3' }
+    ]
+    const dataKey = 'storage_test_data'
+    const dataValue = JSON.stringify(data)
+  </script>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <form id="form">
+        <input type="text" id="name" placeholder="Type name...">
+        <input type="text" id="description" placeholder="Type description...">
+        <button type="submit" id="add">Add</button>
+      </form>
+    </div>
+  </div>
+  <script src="../../common/header.js"></script>
+  <script>
+    const storage = new Storage()
+    const storageData = storage.get(dataKey)
+    if (!storageData) {
+      storage.set(dataKey, dataValue)
+    }
+    const form = document.getElementById('form')
+    const nameInput = document.getElementById('name')
+    const descriptionInput = document.getElementById('description')
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      const name = nameInput.value
+      const description = descriptionInput.value
+      if (name && description) {
+        const newRecord = { id: Date.now(), name, description }
+        const currentData = JSON.parse(storage.get(dataKey))
+        currentData.push(newRecord)
+        storage.set(dataKey, JSON.stringify(currentData))
+        alert('Record added successfully!')
+        nameInput.value = ''
+        descriptionInput.value = ''
+      } else {
+        alert('Please fill in all fields.')
+      }
+    })
+  </script>
+</body>
+</html>
